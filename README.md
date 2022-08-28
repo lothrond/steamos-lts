@@ -3,7 +3,7 @@ SteamOS (LTS)
 Your guide to a SteamOS environment based from the latest Ubuntu (LTS) release.
 This guide will walk you through the process of setting up a SteamOS from a fresh Ubuntu (LTS) installation media.
 
-Current Ubuntu (LTS) release: `Focal Fossa 20.04.2`
+Current Ubuntu (LTS) release: `Jammy Jellyfish 22.04`
 
 # Setup
 An installation media with the latest Ubuntu (LTS) release is where to start.
