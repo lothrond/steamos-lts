@@ -1,0 +1,9 @@
+[Unit]
+Description=SteamOS Autorepair
+
+[Service]
+ExecStart=/usr/bin/steamos-autorepair.sh
+Type=oneshot
+
+
+

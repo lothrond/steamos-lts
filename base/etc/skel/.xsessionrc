@@ -1,0 +1,2 @@
+# Do not remove this or the Valve bug reporter will break.
+chmod 640 ~/.Xauthority

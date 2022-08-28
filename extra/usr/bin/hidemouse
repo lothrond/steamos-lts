@@ -1,0 +1,8 @@
+#!/bin/bash
+
+__move__() {
+    xdotool mousemove 0 1079
+}
+
+__move__ && sleep 3 && __move__
+

@@ -1,0 +1,13 @@
+[org.gnome.desktop.screensaver] 
+lock-enabled=false
+idle-activation-enabled=false
+
+[org.gnome.settings-daemon.plugins.power]
+button-power='suspend'
+
+[org.gnome.desktop.background]
+picture-uri="file:///usr/share/backgrounds/steamos_desktop.jpg"
+show-desktop-icons=true
+
+[org.gnome.desktop.interface]
+text-scaling-factor=1.5

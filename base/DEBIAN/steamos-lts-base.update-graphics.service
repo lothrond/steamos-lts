@@ -1,0 +1,11 @@
+[Unit]
+Description=Update Default Graphics
+Before=systemd-user-sessions.service
+
+[Service]
+ExecStart=/etc/init.d/update-graphics start
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=display-manager.service

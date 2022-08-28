@@ -1,0 +1,8 @@
+# Allow 'steam' user to perform SteamOS update process
+steam ALL=(ALL) NOPASSWD: /usr/bin/steamos-update
+
+# Allow 'steam' user to perform Debian/Ubuntu system update process
+steam ALL=(ALL) NOPASSWD: /usr/bin/apt update -y
+steam ALL=(ALL) NOPASSWD: /usr/bin/apt upgrade -y
+steam ALL=(ALL) NOPASSWD: /usr/bin/apt install linux-tools-`uname -r` -y
+steam ALL=(ALL) NOPASSWD: /usr/bin/apt autoremove -y

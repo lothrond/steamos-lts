@@ -1,0 +1,28 @@
+# Application profiles for the NVIDIA Linux graphics driver, version 325.15
+# Last modified: Wed Jul 31 18:42:14 PDT 2013
+# These profiles were provided by NVIDIA and should not be modified.  If you
+# wish to change the defaults provided here, you can override them by creating
+# custom rules in /etc/nvidia/nvidia-application-profiles-rc (which will apply
+# system-wide) or, for a given user, $HOME/.nv/nvidia-application-profiles-rc
+# (which will apply to that particular user). See the "APPLICATION PROFILE
+# SEARCH PATH" section of the NVIDIA Linux Graphics Driver README for more
+# information.
+{
+    "profiles" : [
+        {
+          "name" : "NonConformantBlitFramebufferScissor",
+          "settings" : [ "GLConformantBlitFramebufferScissor", false ]
+        }
+    ],
+    "rules" : [
+        # Work around GNOME bug 690451 (see
+        # https://bugzilla.gnome.org/show_bug.cgi?id=690451)
+        {
+          "pattern" : {
+             "feature" : "dso",
+             "matches" : "libcogl.so"
+          },
+          "profile" : "NonConformantBlitFramebufferScissor"
+        }
+    ]
+}

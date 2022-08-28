@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Check Steam client logs "journalctl-style"
+#
+
+# set return value
+ret=1
+
+# logfile to check
+logfile='~/.steam/debian-installation/error.log'
+
+# check log (and follow)
+if [ -f ${logfile} ]; then
+	if tail -f -n 100 ${logfile}; then
+		ret=0
+	fi
+else
+	echo "${logfile} not found ..."
+fi
+
+# exit with return value
+exit ${ret}

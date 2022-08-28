@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+# SteamOS update utility
+
+[ ${STEAMOS_UPDATE_PID} ] || \
+	STEAMOS_UPDATE_PID=/tmp/steamos-update.pid
+
+# Start SteamOS update process (with process ID).
+echo $$ > ${STEAMOS_UPDATE_PID}
+
+# Debian or Ubuntu based SteamOS upgrade process (function).
+update_steamos() {
+	if apt update -y; then
+		if apt upgrade -y; then
+			if apt install linux-tools-$(uname -r) -y; then	# cpupower (gamemode)
+				if apt autoremove -y; then
+					echo -e "\nSuccess.";  return 0
+				fi
+			fi
+		fi
+	fi
+
+	echo -e "\nFailed..."; return 1
+}
+
+update_steamos
+
+# Done (with function, remove ID).
+rm ${STEAMOS_UPDATE_PID}; exit $?

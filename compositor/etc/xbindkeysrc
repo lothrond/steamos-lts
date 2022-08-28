@@ -1,0 +1,17 @@
+# Volume Up
+"pactl set-sink-volume @DEFAULT_SINK@ +5% && aplay /home/steam/.steam/root/tenfoot/resource/sounds/volume_change.wav"
+   XF86AudioRaiseVolume
+   Mod2 + XF86AudioRaiseVolume
+   m:0x10 + c:123
+
+# Volume Down
+"pactl set-sink-volume @DEFAULT_SINK@ -5% && aplay /home/steam/.steam/root/tenfoot/resource/sounds/volume_change.wav"
+   XF86AudioLowerVolume
+   Mod2 + XF86AudioLowerVolume
+   m:0x10 + c:122
+
+# Mute/Unmute:
+"pactl set-sink-mute @DEFAULT_SINK@ toggle aplay /home/.steam/root/tenfoot/resource/sounds/volume_change.wav"
+   XF86AudioMute
+   Mod2 + XF86AudioMute
+   m:0x10 + c:121

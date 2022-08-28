@@ -1,0 +1,13 @@
+#! /bin/sh
+#
+# update-graphics hook script
+#
+# You can add an executable file to this directory and it will have the ability to override the default
+# graphics device chosen by /etc/init.d/update-graphics. The currently selected graphics device
+# is passed as the first argument. See 'man run-parts' for the rules around the naming of the file and
+# the order in which they run
+#
+# e.g. to force fglrx as the graphics driver, your script should do
+#
+#   update-alternatives --set glx /usr/lib/fglrx
+#

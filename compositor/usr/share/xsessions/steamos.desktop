@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=SteamOS
+Comment=Starts a SteamOS session
+Exec=steamos-session
+Icon=steamicon.png
+Type=Application

@@ -1,0 +1,10 @@
+[Unit]
+Description=Build DKMS
+Before=systemd-user-sessions.service update-graphics.service
+
+[Service]
+ExecStart=/etc/init.d/build-dkms start
+Type=oneshot
+
+[Install]
+WantedBy=display-manager.service

@@ -1,0 +1,1 @@
+steam ALL=(ALL) NOPASSWD: /usr/bin/alienware_wmi_control.sh

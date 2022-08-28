@@ -1,0 +1,81 @@
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:         build-dkms
+# Required-Start:   $remote_fs $syslog
+# Required-Stop:
+# Default-Start:    2 3 4 5
+# Default-Stop:     0 1 6
+# Short-Description: Build DKMS
+# Description:       Build all DKMS modules if necessary
+### END INIT INFO
+
+PATH=/sbin:/bin:/usr/bin:/usr/sbin
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+do_start () {
+ dkms_modules=`find /usr/src -maxdepth 2 -name dkms.conf`
+
+ dkms_dirty=0
+
+ for i in $dkms_modules
+ do
+  module_name=`grep ^PACKAGE_NAME $i | cut -d= -f2 | tr -d \"`
+  module_status=`dkms status $module_name`
+  if [[ -z `echo $module_status | grep installed` ]]; then
+   dkms_dirty=1
+  fi
+ done
+
+ if [[ $dkms_dirty -eq 1 ]]; then
+  plymouth display-message --text='Preparing hardware drivers...'
+
+  for i in $dkms_modules
+  do
+   module_name=`grep ^PACKAGE_NAME $i | cut -d= -f2 | tr -d \"`
+   module_version=`grep ^PACKAGE_VERSION $i | cut -d= -f2 | tr -d \"`
+
+   dkms build -m $module_name -v $module_version
+   dkms install -m $module_name -v $module_version
+  done
+  # trigger a change notification so any newly built modules
+  # will get loaded
+  udevadm trigger
+ fi
+
+ # disable ourselves since we only really need to run on the first boot
+ systemctl disable build-dkms
+
+ # clear any potential feedback we might have left on screen
+ plymouth display-message --text=""
+ return 0
+}
+
+do_status () {
+ return 0
+}
+
+case "$1" in
+  start|"")
+ do_start
+ ;;
+  restart|reload|force-reload)
+ echo "Error: argument '$1' not supported" >&2
+ exit 3
+ ;;
+  stop)
+ # No-op
+ ;;
+  status)
+ do_status
+ exit $?
+ ;;
+  *)
+ echo "Usage: build-dkms.sh" >&2
+ exit 3
+ ;;
+esac
+
+:
+

@@ -1,0 +1,10 @@
+Package: steamos-lts-debs
+Version: 1.0-1
+Section: base
+Priority: extra
+Architecture: all
+Depends: steamos-lts-base (<=1.0-1)
+Maintainer: lothrond lothrond@protonmail.com
+Description: 
+ This package contains various Debian packages needed for SteamOS (LTS) installation, including
+ some deprecated SteamOS and Ubuntu packages.

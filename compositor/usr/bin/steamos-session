@@ -1,0 +1,149 @@
+#! /bin/sh
+#
+# Copyright: 2013 Valve Corporation <steamos@steampowered.com>
+#            2019 Alesh Slovak <aleshslovak@gmail.com>
+#            2021 lothrond <lothrond@protonmail.com>
+#
+# License: BSD-2-Clause
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice(s), this list of conditions and the following disclaimer
+#    unmodified other than the allowable addition of one or more
+#    copyright notices.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice(s), this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# .
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER(S) ``AS IS'' AND ANY
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT HOLDER(S) BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+# BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+# OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+# EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+## BEGIN STEAMOS ENVIRONMENT:
+
+export SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS=0
+export HOMETEST_DESKTOP=1
+export HOMETEST_USER=steam
+export HOMETEST_DESKTOP_USER=desktop
+export HOMETEST_DESKTOP_SESSION=gnome
+
+# Set PATH for SteamOS:
+STEAMOS_PATH=/usr/share/steamos/bin
+
+if [ -d ${STEAMOS_PATH} ]; then
+	export PATH=${STEAMOS_PATH}:${PATH}
+fi
+
+# Set SteamOS command line:
+[ ${STEAMOS_CMD} ] || \
+	STEAMOS_CMD="steam -tenfoot -steamos -fulldesktopres"
+
+# Set startup volume for SteamOS:
+[ ${STEAMOS_VOL} ] || \
+	STEAMOS_VOL='90%'
+
+# Set SteamOS compositor config file:
+CONFIG_PATH=${XDG_CONFIG_HOME:-$HOME/.config}
+CONFIG_FILE="${CONFIG_PATH}/steamos-compositor-plus"
+
+# SteamOS compositor command line:
+[ ${STEAMCOMPMGR_CMD} ] || \
+	STEAMCOMPMGR_CMD="steamcompmgr"
+
+# Set redshift configuration file:
+[ ${REDSHIFT_CONF} ] || \
+	REDSHIFT_CONF=/etc/redshift.conf
+
+# Set xbindkeys configuration file:
+[ ${XBINDKEYS_CONF} ] || \
+	XBINDKEYS_CONF=/etc/xbindkeysrc
+
+## END STEAMOS ENVIRONMENT.
+## BEGIN STEAMOS TWEAKS ENVIRONMENT:
+
+export MANGOHUD=1
+export MANGOHUD_CONFIG="no_display,toggle_hud=F3"
+
+## END STEAMOS TWEAKS ENVIRONMENT.
+
+# Set High Definition Mode.
+if which set_hd_mode.sh > /dev/null; then
+	set_hd_mode.sh >> "${HOME}/.set_hd_mode.log"
+fi
+
+# Preload SteamOS modeswitch inhibitor(s).
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libmodeswitch_inhibitor.so:/usr/lib/i386-linux-gnu/libmodeswitch_inhibitor.so
+
+# Disable DPMS and screen blanking for now.
+xset -dpms
+xset s off
+
+# Start audio subsystem.
+if command -v start-pulseaudio-x11 > /dev/null; then
+	start-pulseaudio-x11 &
+fi
+
+# Start bluetooth subsystem.
+if systemctl is-active --quiet bluetooth && command -v bluetoothctl > /dev/null; then
+	bluetoothctl power on
+fi
+
+# Start load SteamOS compositor config.
+if [ -f ${CONFIG_FILE} ]; then
+	source ${CONFIG_FILE}
+fi
+
+# Start SteamOS compositor
+${STEAMCOMPMGR_CMD} &
+
+# Start redshift DAY:NIGHT cycle
+if which redshift > /dev/null; then
+	redshift -c ${REDSHIFT_CONF} &
+fi
+
+# Start xbindkeys rebinding support
+# (Also includes a fix for media keys)
+if which xbindkeys > /dev/null; then
+	xbindkeys -f ${XBINDKEYS_CONF} &
+fi
+
+# Start load SteamOS arrow cursor
+loadargb_cursor /usr/share/icons/steam/arrow.png
+
+# Workaround for SteamOS starting at full volume.
+bash -c "sleep 10 && pactl set-sink-volume @DEFAULT_SINK@ ${STEAMOS_VOL}" &
+
+# Workaround for Steam login issue while Steam client change propagates out of Beta
+touch ~/.steam/root/config/SteamAppData.vdf || true
+
+# Workaround for missing background when starting steam in big picture mode for the first time
+data_home=${XDG_DATA_HOME:-$HOME/.local/share}
+imgs_dir=${data_home}/Steam/tenfoot/resource/images
+boostrap_img=${imgs_dir}/bootstrapper.jpg
+if [ ! -f "${boostrap_img}" ]; then
+	mkdir -p "${imgs_dir}"
+	cp /usr/share/pixmaps/steam-bootstrapper.jpg "${bootstrap_img}"
+fi
+
+# Start load SteamOS tweaks
+if which steam-tweaks > /dev/null; then
+	steam-tweaks
+fi
+
+# Start SteamOS (restart if Steam client is killed).
+while ${STEAMOS_CMD}; do
+	:
+done
+
+exit $?
