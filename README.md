@@ -1,11 +1,17 @@
-![SteamOS (LTS)](image.png)
+---
+# SteamOS (LTS)
 
-Your guide to a SteamOS environment based from the latest Ubuntu (LTS) release.
-This guide will walk you through the process of setting up a SteamOS from a fresh Ubuntu (LTS) installation media.
+![SteamOS (LTS)](image.png)
+---
+
+### Your guide to a SteamOS environment based from the latest Ubuntu (LTS) release.
 
 Current Ubuntu (LTS) release: `Jammy Jellyfish 22.04.1`
 
+---
 # Setup
+### This guide will walk you through the process of setting up SteamOS from a fresh Ubuntu (LTS) installation media.
+
 An installation media with the latest Ubuntu (LTS) release is where to start.
 
 (While installing the base Ubuntu (LTS) system, you will need a keyboard/mouse untill an `openssh-server` is setup.)
