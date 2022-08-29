@@ -1,11 +1,20 @@
-SteamOS (LTS) 
+# SteamOS (LTS) Changelog
+
+SteamOS fixes:
 
 -updated to the latest Ubuntu lts
 -flicker-free boot
 -latest nvidia driver
--latest amd driver
+#-latest amd driver (wip)
 -redshift integration
 -working volume keys
 -working updater
+-working system info
 -working desktop
--working sound for desktop
+
+Desktop fixes:
+
+-working volume
+-eject disk application
+-play disk application
+-working return to steamos
