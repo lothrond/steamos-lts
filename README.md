@@ -1,5 +1,5 @@
-SteamOS (LTS)
----
+![SteamOS (LTS)](image.png)
+
 Your guide to a SteamOS environment based from the latest Ubuntu (LTS) release.
 This guide will walk you through the process of setting up a SteamOS from a fresh Ubuntu (LTS) installation media.
 
